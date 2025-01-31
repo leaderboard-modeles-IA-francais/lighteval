@@ -95,6 +95,7 @@ class VLLMModelConfig:
     generation_parameters: GenerationParameters = None  # sampling parameters to use for generation
     max_num_seqs: int = 128  # maximum number of sequences per iteration; This variable and `max_num_batched_tokens` effectively control the batch size at prefill stage. See https://github.com/vllm-project/vllm/issues/2492 for detailed explaination.
     max_num_batched_tokens: int = 2048  # maximum number of tokens per batch
+    enforce_eager: bool = False  # whether or not to disable cuda graphs with vllm
 
     subfolder: Optional[str] = None
 
@@ -138,12 +139,18 @@ class VLLMModel(LightevalModel):
         return self._tokenizer
 
     def cleanup(self):
-        destroy_model_parallel()
+        if ray is not None:
+            ray.get(ray.remote(destroy_model_parallel).remote())
+        else:
+            destroy_model_parallel()
         if self.model is not None:
             del self.model
         gc.collect()
         ray.shutdown()
-        destroy_distributed_environment()
+        if ray is not None:
+            ray.get(ray.remote(destroy_distributed_environment).remote())
+        else:
+            destroy_distributed_environment()
         torch.cuda.empty_cache()
 
     @property
@@ -185,6 +192,7 @@ class VLLMModel(LightevalModel):
             "seed": config.seed,
             "max_num_seqs": int(config.max_num_seqs),
             "max_num_batched_tokens": int(config.max_num_batched_tokens),
+            "enforce_eager": config.enforce_eager,
         }
         if int(config.data_parallel_size) > 1:
             self.model_args["distributed_executor_backend"] = "ray"
