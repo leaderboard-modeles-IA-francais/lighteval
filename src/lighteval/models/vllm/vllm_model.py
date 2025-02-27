@@ -129,7 +129,7 @@ class VLLMModel(LightevalModel):
         self.model_sha = ""  # config.get_model_sha()
         self.precision = _get_dtype(config.dtype, config=self._config)
 
-        self.model_info = ModelInfo(model_name=self.model_name, model_sha=self.model_sha)
+        self.model_info = ModelInfo(model_name=self.model_name, model_sha=self.model_sha, model_dtype=self.precision)
         self.sampling_params = SamplingParams(**config.generation_parameters.to_vllm_dict())
         self.pairwise_tokenization = config.pairwise_tokenization
 
