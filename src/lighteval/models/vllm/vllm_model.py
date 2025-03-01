@@ -216,7 +216,7 @@ class VLLMModel(LightevalModel):
             trust_remote_code=config.trust_remote_code,
             tokenizer_revision=config.revision,
         )
-        tokenizer.pad_token = tokenizer.eos_token
+        #tokenizer.pad_token = tokenizer.eos_token
         return tokenizer
 
     def greedy_until(
