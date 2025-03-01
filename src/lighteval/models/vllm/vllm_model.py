@@ -94,6 +94,7 @@ class VLLMModelConfig:
     pairwise_tokenization: bool = False  # whether to tokenize the context and continuation separately or together.
     generation_parameters: GenerationParameters = None  # sampling parameters to use for generation
     enforce_eager: bool = False  # whether or not to disable cuda graphs with vllm
+    tokenizer_mode: str = "auto"
 
     subfolder: Optional[str] = None
 
@@ -191,6 +192,7 @@ class VLLMModel(LightevalModel):
             "swap_space": 4,
             "seed": 1234,
             "enforce_eager": config.enforce_eager,
+            "tokenizer_mode": config.tokenizer_mode,
         }
         if int(config.data_parallel_size) > 1:
             self.model_args["distributed_executor_backend"] = "ray"
@@ -210,7 +212,7 @@ class VLLMModel(LightevalModel):
     def _create_auto_tokenizer(self, config: VLLMModelConfig, env_config: EnvConfig):
         tokenizer = get_tokenizer(
             config.pretrained,
-            tokenizer_mode="auto",
+            tokenizer_mode=config.tokenizer_mode,
             trust_remote_code=config.trust_remote_code,
             tokenizer_revision=config.revision,
         )
