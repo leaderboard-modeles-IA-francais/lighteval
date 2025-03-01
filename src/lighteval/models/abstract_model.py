@@ -151,11 +151,11 @@ class LightevalModel(ABC):
         if add_special_tokens is None:
             add_special_tokens = self.add_special_tokens
         if isinstance(str_to_encode, str):
-            return self.tokenizer.encode(str_to_encode, add_special_tokens=add_special_tokens)
+            return self.tokenizer.encode(str_to_encode)  # , add_special_tokens=add_special_tokens)
         return self.tokenizer(
             str_to_encode,
             padding=True,
-            add_special_tokens=add_special_tokens,
+            # add_special_tokens=add_special_tokens,
             return_tensors="pt",
         )
 
