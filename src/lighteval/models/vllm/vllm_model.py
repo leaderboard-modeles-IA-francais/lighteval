@@ -216,7 +216,7 @@ class VLLMModel(LightevalModel):
             trust_remote_code=config.trust_remote_code,
             tokenizer_revision=config.revision,
         )
-        #tokenizer.pad_token = tokenizer.eos_token
+        tokenizer.pad_token = tokenizer.decode(tokenizer.eos_token_id)
         return tokenizer
 
     def greedy_until(
@@ -234,8 +234,9 @@ class VLLMModel(LightevalModel):
         Returns:
             list[GenerateReturn]: list of generated responses.
         """
+        eos_token = self.tokenizer.decode(self.tokenizer.eos_token_id)
         for request in requests:
-            request.stop_sequence = as_list(request.stop_sequence) + [self.tokenizer.eos_token]
+            request.stop_sequence = as_list(request.stop_sequence) + [eos_token]
             request.tokenized_context = self.tok_encode(request.context)
 
         dataset = GenerativeTaskDataset(requests=requests, num_dataset_splits=self.DATASET_SPLITS)
