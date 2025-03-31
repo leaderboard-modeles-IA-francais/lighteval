@@ -57,8 +57,7 @@ model: # Model specific parameters
 
 > [!WARNING]
 > In the case of OOM issues, you might need to reduce the context size of the
-> model as well as reduce the `gpu_memory_utilization` parameter.
-
+> model as well as reduce the `gpu_memory_utilisation` parameter.
 
 ## Dynamically changing the metric configuration
 
@@ -87,7 +86,6 @@ An optional key `metric_options` can be passed in the yaml file,
 using the name of the metric or metrics, as defined in the `Metric.metric_name`.
 In this case, the `codegen_pass@1:16` metric defined in our tasks will have the `num_samples` updated to 16,
 independently of  the number defined by default.
-
 
 ## Multi-node vLLM
 
@@ -198,4 +196,3 @@ lighteval endpoint openai "$MODEL_NAME" "$TASK_ARGS" --custom-tasks $TASK_FILE
 
 The full script is available here:
 [https://github.com/huggingface/lighteval/blob/main/examples/slurm/multi_node_vllm_serve.slurm](https://github.com/huggingface/lighteval/blob/main/examples/slurm/multi_node_vllm_serve.slurm)
-
