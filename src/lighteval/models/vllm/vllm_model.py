@@ -55,7 +55,6 @@ if is_vllm_available():
     from vllm import LLM, SamplingParams
     from vllm.distributed.parallel_state import destroy_distributed_environment, destroy_model_parallel
     from vllm.transformers_utils.tokenizer import get_tokenizer
-    from vllm.entrypoints.chat_utils import ChatCompletionMessageParam
 
     logging.getLogger("vllm").propagate = True
     logging.getLogger("vllm").handlers.clear()
@@ -68,7 +67,6 @@ else:
     get_tokenizer = None
     ray = None
     distribute = None
-    ChatCompletionMessageParam = None
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
@@ -377,9 +375,8 @@ class VLLMModel(LightevalModel):
                 if x is not None
             ]
         else:
-            messages: List[List[ChatCompletionMessageParam]] = [[{"role": "user", "content": input}] for input in inputs]
-            outputs = self.model.chat(
-                messages=messages,
+            outputs = self.model.generate(
+                prompt_token_ids=inputs,
                 sampling_params=sampling_params,
                 use_tqdm=True,
             )
