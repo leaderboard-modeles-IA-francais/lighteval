@@ -353,7 +353,6 @@ class LightevalTask:
             dict[RequestType, List[Request]]: List of requests.
         """
         requests: dict[RequestType, list[Request]] = collections.defaultdict(list)
-
         if self.has_metric_category[MetricCategory.TARGET_PERPLEXITY]:
             golds = formatted_doc.get_golds()
             requests[RequestType.LOGLIKELIHOOD] += [

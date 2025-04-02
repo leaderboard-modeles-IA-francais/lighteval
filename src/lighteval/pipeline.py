@@ -224,7 +224,7 @@ class Pipeline:
             if self._metric_options:
                 self._update_num_samples(task_dict)
             LightevalTask.load_datasets(list(task_dict.values()), self.pipeline_parameters.dataset_loading_processes)
-
+               
             self.evaluation_tracker.task_config_logger.log(task_dict)
 
             requests, docs = create_requests_from_tasks(
@@ -234,7 +234,7 @@ class Pipeline:
                 lm=self.model,
                 max_samples=self.pipeline_parameters.max_samples,
                 evaluation_tracker=self.evaluation_tracker,
-                use_chat_template=self.pipeline_parameters.use_chat_template,
+                use_chat_template=False,
                 system_prompt=self.pipeline_parameters.system_prompt,
             )
 

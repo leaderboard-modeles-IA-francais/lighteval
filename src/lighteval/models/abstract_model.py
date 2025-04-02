@@ -154,9 +154,9 @@ class LightevalModel(ABC):
             return self.tokenizer.encode(str_to_encode)  # , add_special_tokens=add_special_tokens)
         return self.tokenizer(
             str_to_encode,
-            padding=True,
+            #padding=True,
             # add_special_tokens=add_special_tokens,
-            return_tensors="pt",
+            # return_tensors="pt",
         )
 
     def tok_encode_pair(self, context, continuation, pairwise: bool = False):
