@@ -234,7 +234,7 @@ class Pipeline:
                 lm=self.model,
                 max_samples=self.pipeline_parameters.max_samples,
                 evaluation_tracker=self.evaluation_tracker,
-                use_chat_template=False,
+                use_chat_template=self.pipeline_parameters.use_chat_template,
                 system_prompt=self.pipeline_parameters.system_prompt,
             )
 
