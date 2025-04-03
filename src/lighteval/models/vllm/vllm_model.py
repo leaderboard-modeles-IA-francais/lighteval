@@ -72,7 +72,6 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 STARTING_BATCH_SIZE = 512
 
-
 @dataclass
 class VLLMModelConfig:
     pretrained: str
@@ -241,7 +240,7 @@ class VLLMModel(LightevalModel):
         eos_token = self.tokenizer.decode(self.tokenizer.eos_token_id)
         for request in requests:
             request.stop_sequence = as_list(request.stop_sequence) + [eos_token]
-            request.tokenized_context = self.tokenizer.apply_chat_template([{"role": "user", "content": request.context}])
+            request.tokenized_context = self.tokenizer.apply_chat_template(request.context)
 
         dataset = GenerativeTaskDataset(requests=requests, num_dataset_splits=self.DATASET_SPLITS)
         results = []
@@ -262,19 +261,17 @@ class VLLMModel(LightevalModel):
                 # the case! Because of that we only use batch size of 1
                 stop_tokens = dataset[0].stop_sequence
 
+            
             max_new_tokens = self._config.generation_parameters.max_new_tokens or dataset[0].generation_size
             returns_logits = dataset[0].use_logits
             num_samples = dataset[0].num_samples
-
-            context = [c.context for c in dataset]
-            tokenized = self.tokenizer(context, add_special_tokens=self.add_special_tokens)
-
+            
             # The main question for this step is the following:
             # Would we rather truncate the prompt to allow generation to go to max_new_tokens, at the risk
             # of losing some meaning, or have some generations that are exceedingly short?
             # The choice we go for here is to avoid truncating the prompt if we can, since it
             # should have been managed by the prompt creator/few shot manager if requested by the user.
-            inputs = tokenized.input_ids
+            inputs = [c.tokenized_context for c in dataset]
             context_size = len(inputs[0])
 
             # left truncate the inputs to the maximum length
