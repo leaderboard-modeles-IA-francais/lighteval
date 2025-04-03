@@ -240,7 +240,7 @@ class VLLMModel(LightevalModel):
         eos_token = self.tokenizer.decode(self.tokenizer.eos_token_id)
         for request in requests:
             request.stop_sequence = as_list(request.stop_sequence) + [eos_token]
-            request.tokenized_context = self.tokenizer.apply_chat_template(request.context)
+            request.tokenized_context = self.tokenizer.apply_chat_template(request.context, add_generation_prompt=True)
 
         dataset = GenerativeTaskDataset(requests=requests, num_dataset_splits=self.DATASET_SPLITS)
         results = []

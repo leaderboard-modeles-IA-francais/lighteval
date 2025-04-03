@@ -235,12 +235,6 @@ class PromptManager:
                     toks = [self.model.tok_encode(msg["content"]) for msg in output]
                     toks = [t for ts in toks for t in ts]
 
-        if type(self.model) in [LiteLLMClient, InferenceProvidersClient]:
-            return output, num_effective_fewshots
-
-        elif use_chat_template:
-            return output, num_effective_fewshots
-
         return output, num_effective_fewshots
 
     def get_examples(
