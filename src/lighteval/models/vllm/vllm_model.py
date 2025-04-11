@@ -281,9 +281,9 @@ class VLLMModel(LightevalModel):
             if max_new_tokens is not None:
                 if context_size + max_new_tokens > self.max_length:
                     logger.warning(
-                        f"{context_size + max_new_tokens=} which is greater than {self.max_length=}. Truncating context to {self.max_length - max_new_tokens} tokens."
+                        f"{context_size + max_new_tokens=} which is greater than {self.max_length=}. Truncating context to {self.max_length - max_new_tokens - 1} tokens."
                     )
-                    context_size = self.max_length - max_new_tokens
+                    context_size = self.max_length - max_new_tokens - 1
                     if context_size < 0:
                         logger.critical(
                             f"{context_size=} is less than 0, either reduce the max_new_tokens or increase model max length."
@@ -295,7 +295,7 @@ class VLLMModel(LightevalModel):
                     logger.warning(
                         f"{context_size=} which is greater than {self.max_length=}. Truncating context to {self.max_length} tokens."
                     )
-                    context_size = self.max_length
+                    context_size = self.max_length - 1
                     inputs = [input[-context_size:] for input in inputs]
 
             vllm_outputs = self._generate(
